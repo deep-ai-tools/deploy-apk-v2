@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webiste Deploy - Vercel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #0a0a0a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Neon Background Effect */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255, 0, 128, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(128, 0, 255, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 60% 70%, rgba(255, 128, 0, 0.3) 0%, transparent 50%);
+            animation: neonPulse 8s ease-in-out infinite;
+            filter: blur(60px);
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-5%, 5%) scale(1.1); }
+            50% { transform: translate(5%, -5%) scale(0.9); }
+            75% { transform: translate(-3%, -3%) scale(1.05); }
+        }
+
+        /* Animated Grid */
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes gridMove {
+            0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+            100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+        }
+
+        /* Floating particles */
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            animation: float 10s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            background: rgba(15, 15, 30, 0.85);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 
+                0 0 60px rgba(0, 255, 255, 0.3),
+                0 0 100px rgba(255, 0, 255, 0.2),
+                inset 0 0 40px rgba(0, 255, 255, 0.05);
+            border: 2px solid rgba(0, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
+            animation: containerGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes containerGlow {
+            0%, 100% { 
+                box-shadow: 
+                    0 0 60px rgba(0, 255, 255, 0.3),
+                    0 0 100px rgba(255, 0, 255, 0.2),
+                    inset 0 0 40px rgba(0, 255, 255, 0.05);
+            }
+            50% { 
+                box-shadow: 
+                    0 0 80px rgba(0, 255, 255, 0.5),
+                    0 0 120px rgba(255, 0, 255, 0.3),
+                    inset 0 0 60px rgba(0, 255, 255, 0.08);
+            }
+        }
+
+        /* Character Image */
+        .character-image {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff0080, #7928ca, #00ffff);
+            padding: 4px;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.6),
+                0 0 60px rgba(255, 0, 128, 0.4);
+            animation: imageFloat 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes imageFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .character-image img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            display: block;
+        }
+
+        h1 {
+            background: linear-gradient(135deg, #00ffff, #ff00ff, #00ffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5em;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: textGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes textGlow {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #00ffff;
+            margin-bottom: 30px;
+            font-size: 1em;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .label-icon {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #00ffff;
+            font-size: 1.1em;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .icon {
+            font-size: 1.3em;
+            filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.8));
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            font-size: 1em;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            transition: all 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-button {
+            background: linear-gradient(135deg, #ff0080, #7928ca);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.5);
+        }
+
+        .file-button:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 128, 0.8);
+            transform: scale(1.05);
+        }
+
+        .file-name {
+            color: #00ffff;
+            flex: 1;
+        }
+
+        .btn-deploy {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00ffff, #ff00ff, #00ffff);
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 
+                0 0 30px rgba(0, 255, 255, 0.5),
+                0 0 60px rgba(255, 0, 255, 0.3);
+            animation: gradientShift 3s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .btn-deploy::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-deploy:hover::before {
+            left: 100%;
+        }
+
+        .btn-deploy:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 0 40px rgba(0, 255, 255, 0.7),
+                0 0 80px rgba(255, 0, 255, 0.5);
+        }
+
+        .btn-deploy:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer {
+            text-align: center;
+            background: linear-gradient(135deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 1em;
+            margin-top: 10px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            animation: footerPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes footerPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+            border: 2px solid;
+        }
+
+        .status.success {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            display: block;
+        }
+
+        .status.error {
+            background: rgba(255, 0, 85, 0.1);
+            color: #ff0055;
+            border-color: #ff0055;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+            display: block;
+        }
+
+        .status.loading {
+            background: rgba(0, 191, 255, 0.1);
+            color: #00bfff;
+            border-color: #00bfff;
+            box-shadow: 0 0 20px rgba(0, 191, 255, 0.3);
+            display: block;
+        }
+
+        .status a {
+            color: inherit;
+            text-decoration: underline;
+            font-weight: 700;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #00ffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Grid Background -->
+    <div class="grid-background"></div>
+
+    <!-- Floating Particles -->
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 1s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 3s;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 2.5s;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 4.5s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 1.5s;"></div>
+
+    <div class="container">
+        <!-- Character Image -->
+        <div class="character-image">
+            <img id="characterImg" src="https://i.ibb.co/mFSX7vQ/mFSX7vQL.jpg" alt="Character" onerror="this.src='https://i.pinimg.com/564x/b0/7d/5e/b07d5e58e05b77da0ae71a2af4a87e29.jpg'">
+        </div>
+
+        <h1>webiste deploy</h1>
+        <p class="subtitle">Deploy Website ke Vercel dengan Mudah</p>
+
+        <div class="form-group">
+            <div class="label-icon">
+                <span class="icon">🌐</span>
+                <span>Nama Website</span>
+            </div>
+            <input type="text" id="websiteName" placeholder="web-wilzz" value="web-wilzz">
+        </div>
+
+        <div class="form-group">
+            <div class="label-icon">
+                <span class="icon">📄</span>
+                <span>Upload File</span>
+            </div>
+            <label for="fileInput" class="file-input-wrapper">
+                <span class="file-button">Pilih File</span>
+                <span class="file-name" id="fileName">Belum ada file dipilih</span>
+            </label>
+            <input type="file" id="fileInput" accept=".html,.htm">
+        </div>
+
+        <button class="btn-deploy" id="deployBtn">
+            <span id="deployIcon">⚡</span>
+            <span id="deployText">Deploy Sekarang</span>
+        </button>
+
+        <div class="footer">WILZZDEPLOY</div>
+
+        <div class="status" id="status"></div>
+    </div>
+
+    <script>
+        // ⚠️ PENTING: ISI VERCEL TOKEN ANDA DI SINI ⚠️
+        const VERCEL_TOKEN = 'Oq2L8uwy2fi0KqzZ0cJf8Bft';
+
+        const fileInput = document.getElementById('fileInput');
+        const fileNameDisplay = document.getElementById('fileName');
+        const websiteName = document.getElementById('websiteName');
+        const deployBtn = document.getElementById('deployBtn');
+        const deployIcon = document.getElementById('deployIcon');
+        const deployText = document.getElementById('deployText');
+        const status = document.getElementById('status');
+
+        let selectedFile = null;
+
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedFile = file;
+                fileNameDisplay.textContent = file.name;
+                showStatus('success', `✅ File "${file.name}" berhasil dipilih!`);
+            }
+        });
+
+        // Deploy to Vercel
+        deployBtn.addEventListener('click', async () => {
+            const projectName = websiteName.value.trim();
+
+            if (!projectName) {
+                showStatus('error', '❌ Masukkan nama website terlebih dahulu!');
+                return;
+            }
+
+            if (!selectedFile) {
+                showStatus('error', '❌ Pilih file HTML terlebih dahulu!');
+                return;
+            }
+
+            try {
+                deployBtn.disabled = true;
+                deployIcon.innerHTML = '<span class="spinner"></span>';
+                deployText.textContent = 'Deploying...';
+                showStatus('loading', '🚀 Sedang deploy ke Vercel...');
+
+                // Baca file
+                const fileContent = await readFileAsText(selectedFile);
+
+                // Deploy ke Vercel
+                const deployment = await deployToVercel(projectName, fileContent);
+
+                deployBtn.disabled = false;
+                deployIcon.textContent = '✅';
+                deployText.textContent = 'Deploy Berhasil!';
+                
+                showStatus('success', `✅ Deploy berhasil!<br><br>Website Anda: <a href="https://${deployment.url}" target="_blank">https://${deployment.url}</a>`);
+
+                setTimeout(() => {
+                    deployIcon.textContent = '⚡';
+                    deployText.textContent = 'Deploy Sekarang';
+                }, 5000);
+
+            } catch (error) {
+                deployBtn.disabled = false;
+                deployIcon.textContent = '❌';
+                deployText.textContent = 'Deploy Gagal';
+                showStatus('error', `❌ Error: ${error.message}`);
+
+                setTimeout(() => {
+                    deployIcon.textContent = '⚡';
+                    deployText.textContent = 'Deploy Sekarang';
+                }, 3000);
+            }
+        });
+
+        // Baca file sebagai text
+        function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = (e) => reject(new Error('Gagal membaca file'));
+                reader.readAsText(file);
+            });
+        }
+
+        // Deploy ke Vercel menggunakan API
+        async function deployToVercel(projectName, htmlContent) {
+            const response = await fetch('https://api.vercel.com/v13/deployments', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${VERCEL_TOKEN}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: projectName,
+                    files: [
+                        {
+                            file: 'index.html',
+                            data: htmlContent
+                        }
+                    ],
+                    projectSettings: {
+                        framework: null
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || 'Deployment gagal');
+            }
+
+            return await response.json();
+        }
+
+        // Show status message
+        function showStatus(type, message) {
+            status.className = 'status ' + type;
+            status.innerHTML = message;
+        }
+    </script>
+</body>
+</html>
